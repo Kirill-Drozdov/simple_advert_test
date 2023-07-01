@@ -1,8 +1,8 @@
-"""Create advert model
+"""Create Advert model.
 
-Revision ID: b56d7ed9dc64
+Revision ID: 0e14d45c3188
 Revises: 
-Create Date: 2023-07-01 11:51:01.813459
+Create Date: 2023-07-01 16:33:26.391748
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b56d7ed9dc64'
+revision = '0e14d45c3188'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=100), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
+    sa.Column('kind', sa.Enum('BUYING', 'SELLING', 'SERVICE', name='kind_of_service'), nullable=False),
     sa.Column('price', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('description')

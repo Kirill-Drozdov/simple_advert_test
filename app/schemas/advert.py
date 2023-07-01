@@ -2,11 +2,14 @@ from typing import Optional
 
 from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
+from app.models.advert import Advert
+
 
 class AdvertBase(BaseModel):
     """Базовая схема для объявления."""
     title: Optional[str] = Field(None, max_length=100)
     description: Optional[str]
+    kind: Optional[Advert.Kind]
     price: Optional[PositiveInt]
 
     @validator('title')
@@ -34,6 +37,7 @@ class AdvertCreate(AdvertBase):
     """Схема для создания объявления."""
     title: str = Field(..., max_length=100)
     description: str = Field(...,)
+    kind: Advert.Kind = Field(...,)
     price: PositiveInt = Field(...,)
 
 
