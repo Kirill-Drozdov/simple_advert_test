@@ -1,12 +1,12 @@
 from typing import Optional
 
 from fastapi import HTTPException
-# from fastapi.encoders import jsonable_encoder
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.advert import Advert
-from app.schemas.advert import AdvertCreate
+from app.schemas.advert import AdvertCreate, AdvertUpdate
 
 
 async def check_advert_description_is_unique(
@@ -72,6 +72,36 @@ async def create_advert(
 async def get_all_adverts_from_db(
         session: AsyncSession,
 ) -> list[Advert]:
-    """Возвращает все объявления из БД."""
+    """Вернуть все объявления из БД."""
     db_adverts = await session.execute(select(Advert))
     return db_adverts.scalars().all()
+
+
+async def update_advert(
+        db_advert: Advert,
+        advert_in: AdvertUpdate,
+        session: AsyncSession,
+) -> Advert:
+    """Обновить объявление в БД."""
+    obj_data = jsonable_encoder(db_advert)
+    update_data = advert_in.dict(exclude_unset=True)
+
+    for field in obj_data:
+        if field in update_data:
+            setattr(db_advert, field, update_data[field])
+
+    session.add(db_advert)
+    await session.commit()
+    await session.refresh(db_advert)
+
+    return db_advert
+
+
+async def delete_advert(
+        db_advert: Advert,
+        session: AsyncSession,
+) -> Advert:
+    """Удалить объявление из БД."""
+    await session.delete(db_advert)
+    await session.commit()
+    return db_advert

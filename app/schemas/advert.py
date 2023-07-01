@@ -17,6 +17,14 @@ class AdvertBase(BaseModel):
             )
         return value
 
+    @validator('description')
+    def description_cannot_be_null(cls, value: str):
+        if value is None:
+            raise ValueError(
+                'Описание не может быть пустым!'
+            )
+        return value
+
     class Config:
         extra = Extra.forbid
         min_anystr_length = 1
