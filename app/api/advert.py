@@ -2,19 +2,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
-from app.crud.advert import (
-    create_advert,
-    check_advert_description_is_unique,
-    delete_advert,
-    get_all_adverts_from_db,
-    get_advert_by_id,
-    update_advert,
-)
+from app.crud.advert import advert_crud
 from app.schemas.advert import (
     AdvertCreate,
     AdvertDB,
     AdvertUpdate,
 )
+from app.validators import check_advert_description_is_unique
 
 router = APIRouter(
     prefix='/adverts',
@@ -31,8 +25,11 @@ async def create_new_advert(
         session: AsyncSession = Depends(get_async_session),
 ):
     """Разместить объявление."""
-    await check_advert_description_is_unique(advert.description, session)
-    return await create_advert(advert, session)
+    await check_advert_description_is_unique(
+        advert.description,
+        session,
+    )
+    return await advert_crud.create(advert, session)
 
 
 @router.get(
@@ -43,7 +40,7 @@ async def get_all_adverts(
         session: AsyncSession = Depends(get_async_session),
 ):
     """Смотреть все объявления."""
-    return await get_all_adverts_from_db(session)
+    return await advert_crud.get_multi(session)
 
 
 @router.get(
@@ -55,7 +52,7 @@ async def get_advert(
         session: AsyncSession = Depends(get_async_session),
 ):
     """Смотреть одно объявление."""
-    return await get_advert_by_id(
+    return await advert_crud.get(
         advert_id, session
     )
 
@@ -71,13 +68,16 @@ async def partially_update_advert(
         session: AsyncSession = Depends(get_async_session),
 ):
     """Обновить объявление."""
-    advert = await get_advert_by_id(
+    advert = await advert_crud.get(
         advert_id, session
     )
     if obj_in.description is not None:
-        await check_advert_description_is_unique(obj_in.description, session)
+        await check_advert_description_is_unique(
+            advert.description,
+            session,
+        )
 
-    return await update_advert(
+    return await advert_crud.update(
         advert, obj_in, session
     )
 
@@ -92,9 +92,9 @@ async def remove_advert(
         session: AsyncSession = Depends(get_async_session),
 ):
     """Удалить объявление."""
-    advert = await get_advert_by_id(
+    advert = await advert_crud.get(
         advert_id, session
     )
-    return await delete_advert(
+    return await advert_crud.remove(
         advert, session
     )
