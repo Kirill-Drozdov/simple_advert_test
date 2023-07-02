@@ -10,13 +10,10 @@ from app.schemas.advert import (
 )
 from app.validators import check_advert_description_is_unique
 
-router = APIRouter(
-    prefix='/adverts',
-    tags=['Advert'],
-)
+advert_router = APIRouter()
 
 
-@router.post(
+@advert_router.post(
     '/',
     response_model=AdvertDB,
 )
@@ -32,7 +29,7 @@ async def create_new_advert(
     return await advert_crud.create(advert, session)
 
 
-@router.get(
+@advert_router.get(
     '/',
     response_model=list[AdvertDB],
 )
@@ -43,7 +40,7 @@ async def get_all_adverts(
     return await advert_crud.get_multi(session)
 
 
-@router.get(
+@advert_router.get(
     '/{advert_id}',
     response_model=AdvertDB,
 )
@@ -57,7 +54,7 @@ async def get_advert(
     )
 
 
-@router.patch(
+@advert_router.patch(
     '/{advert_id}',
     response_model=AdvertDB,
     response_model_exclude_none=True,
@@ -82,7 +79,7 @@ async def partially_update_advert(
     )
 
 
-@router.delete(
+@advert_router.delete(
     '/{advert_id}',
     response_model=AdvertDB,
     response_model_exclude_none=True,
