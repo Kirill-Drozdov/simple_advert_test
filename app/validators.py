@@ -31,7 +31,6 @@ async def check_advert_description_is_unique(
 
 async def check_user_rights(
         advert: Advert,
-        # session: AsyncSession,
         user: User,
 ) -> Advert:
     """Проверка прав пользователя на осуществление действия."""
