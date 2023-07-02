@@ -49,6 +49,7 @@ class AdvertUpdate(AdvertBase):
 class AdvertDB(AdvertBase):
     """Схема для получения объявления."""
     id: int
+    user_id: Optional[int]
 
     class Config:
         orm_mode = True

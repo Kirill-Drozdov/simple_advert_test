@@ -60,7 +60,12 @@ def run_migrations_offline():
 
 
 def do_run_migrations(connection):
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        # Для SQLite
+        render_as_batch=True,
+    )
 
     with context.begin_transaction():
         context.run_migrations()

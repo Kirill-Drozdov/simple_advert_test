@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Enum, String, Text, Integer
+from sqlalchemy import Column, Enum, ForeignKey, String, Text, Integer
 
 from app.core.db import Base
 
@@ -24,3 +24,12 @@ class Advert(Base):
         nullable=False,
     )
     price = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey(
+        'user.id',
+        name='fk_advert_user_id_user',
+    ))
+
+    def __repr__(self):
+        return (
+            f'Объявление №{self.id} - {self.title}'
+        )

@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
+from app.core.user import current_user
 from app.crud.advert import advert_crud
+from app.models import User
 from app.schemas.advert import (
     AdvertCreate,
     AdvertDB,
@@ -19,6 +21,7 @@ advert_router = APIRouter()
 )
 async def create_new_advert(
         advert: AdvertCreate,
+        user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
     """Разместить объявление."""
@@ -26,12 +29,13 @@ async def create_new_advert(
         advert.description,
         session,
     )
-    return await advert_crud.create(advert, session)
+    return await advert_crud.create(advert, user, session)
 
 
 @advert_router.get(
     '/',
     response_model=list[AdvertDB],
+    response_model_exclude={'user_id'},
 )
 async def get_all_adverts(
         session: AsyncSession = Depends(get_async_session),
@@ -43,6 +47,7 @@ async def get_all_adverts(
 @advert_router.get(
     '/{advert_id}',
     response_model=AdvertDB,
+    response_model_exclude={'user_id'},
 )
 async def get_advert(
         advert_id: int,
