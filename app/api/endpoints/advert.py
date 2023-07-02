@@ -10,7 +10,10 @@ from app.schemas.advert import (
     AdvertDB,
     AdvertUpdate,
 )
-from app.validators import check_advert_description_is_unique
+from app.validators import (
+    check_advert_description_is_unique,
+    check_user_rights,
+)
 
 advert_router = APIRouter()
 
@@ -67,12 +70,14 @@ async def get_advert(
 async def partially_update_advert(
         advert_id: int,
         obj_in: AdvertUpdate,
+        user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
     """Обновить объявление."""
     advert = await advert_crud.get(
         advert_id, session
     )
+    await check_user_rights(advert, user)
     if obj_in.description is not None:
         await check_advert_description_is_unique(
             advert.description,
@@ -91,12 +96,14 @@ async def partially_update_advert(
 )
 async def remove_advert(
         advert_id: int,
+        user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
     """Удалить объявление."""
     advert = await advert_crud.get(
         advert_id, session
     )
+    await check_user_rights(advert, user)
     return await advert_crud.remove(
         advert, session
     )

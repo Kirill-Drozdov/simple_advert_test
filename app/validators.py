@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.advert import Advert
+from app.models.user import User
 
 
 async def check_advert_description_is_unique(
@@ -26,3 +27,17 @@ async def check_advert_description_is_unique(
             status_code=422,
             detail='Придумайте уникальное описание объявления!',
         )
+
+
+async def check_user_rights(
+        advert: Advert,
+        # session: AsyncSession,
+        user: User,
+) -> Advert:
+    """Проверка прав пользователя на осуществление действия."""
+    if advert.user_id != user.id and not user.is_superuser:
+        raise HTTPException(
+            status_code=403,
+            detail='У Вас нет прав на осуществление данного действия!'
+        )
+    return advert
