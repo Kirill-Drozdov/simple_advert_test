@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     APP_TITLE: str = 'SimpleAdvert'
     APP_DESCRIPTION: str = 'Сервис для удобного размещения объявлений'
     DATABASE_URL: str
-    SECRET: str = 'SECRET'
+    SECRET: str = 'letspythonizetheworld:)'
 
     class Config:
         env_file = '.env'
