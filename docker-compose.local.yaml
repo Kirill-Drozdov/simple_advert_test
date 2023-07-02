@@ -1,0 +1,30 @@
+version: "3.3"
+
+services:
+  postgres:
+    image: postgres:13.2
+    container_name: simple_advert_local_postgres
+    restart: always
+    command: -p 6100
+    ports:
+      - "6100:6100"
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  nginx:
+    image: nginx:1.23
+    container_name: simple_advert_local_nginx
+    restart: always
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx/nginx.local.conf:/etc/nginx/conf.d/default.conf
+    env_file:
+      - .env
+
+volumes:
+  local_postgres_data:

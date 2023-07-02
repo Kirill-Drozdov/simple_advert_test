@@ -1,4 +1,4 @@
-aiosqlite==0.17.0
+# aiosqlite==0.17.0
 alembic==1.7.7
 anyio==3.7.0
 asgiref==3.7.2
@@ -35,3 +35,5 @@ typing_extensions==4.7.0
 uvicorn==0.17.6
 watchgod==0.8.2
 websockets==11.0.3
+psycopg2-binary==2.9.3
+asyncpg==0.24.0
