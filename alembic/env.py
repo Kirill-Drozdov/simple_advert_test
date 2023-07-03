@@ -64,7 +64,7 @@ def do_run_migrations(connection):
         connection=connection,
         target_metadata=target_metadata,
         # Для SQLite
-        render_as_batch=True,
+        # render_as_batch=True,
     )
 
     with context.begin_transaction():

@@ -10,4 +10,6 @@ RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY ../. .
 
-CMD uvicorn run:app --host 0.0.0.0 --port 8000 --reload
+# RUN alembic upgrade head
+
+CMD uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
