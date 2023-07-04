@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,7 +26,7 @@ async def check_advert_description_is_unique(
     db_advert_exists = db_advert_exists.scalars().first()
     if db_advert_exists:
         raise HTTPException(
-            status_code=422,
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             detail='Придумайте уникальное описание объявления!',
         )
 
@@ -36,7 +38,7 @@ async def check_user_rights(
     """Проверка прав пользователя на осуществление действия."""
     if advert.user_id != user.id and not user.is_superuser:
         raise HTTPException(
-            status_code=403,
+            status_code=HTTPStatus.FORBIDDEN,
             detail='У Вас нет прав на осуществление данного действия!'
         )
     return advert

@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import APIRouter, HTTPException
 
 from app.core.user import auth_backend, fastapi_users
@@ -33,6 +35,6 @@ def delete_user(id: str):
     Бан/разбан.
     """
     raise HTTPException(
-        status_code=405,
+        status_code=HTTPStatus.METHOD_NOT_ALLOWED,
         detail="Удаление пользователей запрещено!"
     )

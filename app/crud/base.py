@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
@@ -30,7 +32,7 @@ class CRUDBase:
         db_obj = db_obj.scalars().first()
         if db_obj is None:
             raise HTTPException(
-                status_code=404,
+                status_code=HTTPStatus.NOT_FOUND,
                 detail=f'Объект {self.model.__tablename__.title()} не найден!'
             )
         return db_obj
