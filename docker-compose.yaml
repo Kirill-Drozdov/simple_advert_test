@@ -1,17 +1,34 @@
-version: "3.3"
+version: "3.7"
 
 services:
   postgres:
-    image: postgres:13.2
+    image: postgres:15
     container_name: simple_advert_db
     restart: always
-    command: -p 6100
-    ports:
-      - "6100:6100"
+    command: -p 1221
+    # expose:
+    #   - 1221
+    # ports:
+    #   - "6100:6100"
     volumes:
       - local_postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
+
+  # backend:
+  #   build:
+  #     context: .
+  #   container_name: simple_advert_backend
+  #   restart: always
+  #   command: ['/fastapi_app/docker/app.sh']
+  #   ports:
+  #     - 9999:8000
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - .env
+
+
 
 volumes:
   local_postgres_data:
