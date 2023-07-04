@@ -29,56 +29,78 @@ SQLAlchemy==1.4.36
     cd simple_advert_test
     ```
 
-Cоздать и активировать виртуальное окружение с `python 3.10`:
+2. Cоздать и активировать виртуальное окружение с `python 3.10`:
 
-```shell
-python3 -m venv venv
-```
-
-* Если у вас Linux/macOS
-
-    ```
-    source venv/bin/activate
+    ```shell
+    python3 -m venv venv
     ```
 
-* Если у вас windows
+    * Если у вас Linux/macOS
 
+        ```
+        source venv/bin/activate
+        ```
+
+    * Если у вас windows
+
+        ```
+        source venv/scripts/activate
+        ```
+
+3. Установить зависимости из файла `requirements.txt`:
+
+    ```shell
+    python3 -m pip install --upgrade pip
     ```
-    source venv/scripts/activate
+
+    ```shell
+    pip install -r requirements.txt
     ```
 
-Установить зависимости из файла `requirements.txt`:
-
-```shell
-python3 -m pip install --upgrade pip
-```
-
-```shell
-pip install -r requirements.txt
-```
-
-Создать файл `.env` и заполнить его по примеру
+4. Создать файл `.env` и заполнить его по примеру
 из файла `.env.template`.
 
 
 ### Запуск
 
-Запустить проект:
+1. Выполнить запуск контейнера с `PostgreSQL`:
 
-```shell
-uvicorn app.main:app
-```
+    ```shell
+    docker-compose up -d
+    ```
+    > **Warning**:
+    > Убедитесь, что на вашем ПК установлен `Docker`.
+    > Подробнее об установке: https://www.docker.com/products/docker-desktop/
 
-Запустить проект:
+2. Применить миграции базы данных:
 
-```shell
-uvicorn app.main:app
-```
+    ```shell
+    alembic upgrade head
+    ```
+    > **Note**:
+    > Переходить к этому шагу только после успешного запуска контейнера с `PostgreSQL`!
 
-### Спецификация
+3. Запустить проект:
 
-По адресу http://127.0.0.1:8000/docs будет доступна спецификация к проекту,
-где представлены примеры запросов к API и структура ответов.
+    ```shell
+    uvicorn app.main:app
+    ```
+    > **Note**:
+    > Вы можете запускать проект в режиме отладки, добавив флаг --reload.
+
+1. Запустить проект:
+
+    ```shell
+    uvicorn app.main:app
+    ```
+
+
+### Использование
+
+После выполнения инструкций, описанных в разделе
+"[Установка и Запуск](#установка-и-запуск)", вы сможете получить
+доступ к полной документации API, перейдя по адресу http://localhost/docs.
+
 
 ### Об авторе проекта:
 Проект выполнил - [Дроздов К.С.](https://github.com/Kirill-Drozdov)
