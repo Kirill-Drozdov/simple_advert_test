@@ -31,14 +31,27 @@ async def check_advert_description_is_unique(
         )
 
 
-async def check_user_rights(
-        advert: Advert,
+async def check_user_update_delete_rights(
+        obj_db,
         user: User,
-) -> Advert:
-    """Проверка прав пользователя на осуществление действия."""
-    if advert.user_id != user.id and not user.is_superuser:
+):
+    """Проверка прав пользователя на редактирование/удаление записи."""
+    if obj_db.user_id != user.id and not user.is_superuser:
         raise HTTPException(
             status_code=HTTPStatus.FORBIDDEN,
             detail='У Вас нет прав на осуществление данного действия!'
         )
-    return advert
+    return obj_db
+
+
+async def check_user_create_rights(
+        obj_db,
+        user: User,
+):
+    """Проверка прав пользователя на создание записи."""
+    if obj_db.user_id == user.id and not user.is_superuser:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN,
+            detail='У Вас нет прав на осуществление данного действия!'
+        )
+    return obj_db

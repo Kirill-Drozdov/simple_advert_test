@@ -6,15 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
 from app.core.user import current_user
 from app.crud.advert import advert_crud
+from app.crud.feedback import feedback_crud
 from app.models import User
 from app.schemas.advert import (
     AdvertCreate,
     AdvertDB,
     AdvertUpdate,
 )
+from app.schemas.feedback import FeedbackDB
 from app.validators import (
     check_advert_description_is_unique,
-    check_user_rights,
+    check_user_update_delete_rights,
 )
 
 advert_router = APIRouter()
@@ -119,7 +121,7 @@ async def partially_update_advert(
     advert = await advert_crud.get(
         advert_id, session
     )
-    await check_user_rights(advert, user)
+    await check_user_update_delete_rights(advert, user)
     if (obj_in.description is not None
        and obj_in.description != advert.description):
         await check_advert_description_is_unique(
@@ -157,7 +159,34 @@ async def remove_advert(
     advert = await advert_crud.get(
         advert_id, session
     )
-    await check_user_rights(advert, user)
+    await check_user_update_delete_rights(advert, user)
     return await advert_crud.remove(
         advert, session
+    )
+
+
+@advert_router.get(
+    '/{advert_id}/feedbacks',
+    response_model=list[FeedbackDB],
+    status_code=HTTPStatus.OK,
+    summary="Получить все отзывы на объявление",
+    response_description="Список отзывов на объявление",
+)
+async def get_feedbacks_for_advert(
+        advert_id: int,
+        session: AsyncSession = Depends(get_async_session),
+):
+    """Получить все отзывы на объявление.
+
+    - **text**: текст отзыва
+    - **advert_id**: id внешний ключ объявления
+    - **id**: уникальный идентификатор отзыва
+    - **user_id**: внешний ключ пользователя, оставившего отзыв
+    """
+    advert = await advert_crud.get(
+        advert_id, session
+    )
+    return await feedback_crud.get_feedbacks_for_advert(
+        advert.id,
+        session
     )

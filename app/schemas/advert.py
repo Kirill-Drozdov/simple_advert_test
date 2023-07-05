@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
 from app.models.advert import Advert
+# from app.schemas.feedback import FeedbackDB
 
 
 class AdvertBase(BaseModel):
@@ -50,6 +51,7 @@ class AdvertDB(AdvertBase):
     """Схема для получения объявления."""
     id: int
     user_id: Optional[int]
+    # feedbacks: Optional[list[FeedbackDB]]
 
     class Config:
         orm_mode = True
