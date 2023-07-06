@@ -1,5 +1,5 @@
 from app.crud.base import CRUDBase
-from app.models.advert import Advert
+from app.models.all_models import Advert
 
 
 class CRUDAdvert(CRUDBase):

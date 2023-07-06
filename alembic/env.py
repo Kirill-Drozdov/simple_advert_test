@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from alembic import context
 
 from app.core.base import Base
-from app.core.config import settings
+from app.core.settings import settings
 
 load_dotenv('.env')
 

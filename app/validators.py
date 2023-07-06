@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.advert import Advert
+from app.models.all_models import Advert
 from app.models.user import User
 
 
