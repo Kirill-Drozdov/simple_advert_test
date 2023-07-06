@@ -20,4 +20,4 @@ class CRUDComplaint(CRUDBase):
         return complaints.scalars().all()
 
 
-feedback_crud = CRUDComplaint(Complaint)
+complaint_crud = CRUDComplaint(Complaint)

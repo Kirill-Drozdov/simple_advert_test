@@ -4,145 +4,147 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
-from app.core.user import current_user
+from app.core.user import current_user, current_superuser
 from app.crud.advert import advert_crud
-from app.crud.feedback import feedback_crud
+from app.crud.complaint import complaint_crud
 from app.models import User
-from app.schemas.feedback import (
-    FeedbackCreate,
-    FeedbackDB,
-    FeedbackUpdate,
+from app.schemas.complaint import (
+    ComplaintCreate,
+    ComplaintDB,
+    ComplaintUpdate,
 )
 from app.validators import (
     check_user_update_delete_rights,
     check_user_create_rights,
 )
 
-feedback_router = APIRouter()
+complaint_router = APIRouter()
 
 
-@feedback_router.post(
+@complaint_router.post(
     '/',
-    response_model=FeedbackDB,
+    response_model=ComplaintDB,
     status_code=HTTPStatus.CREATED,
-    summary="Оставить отзыв",
-    response_description="Информация об оставленном отзыве",
+    summary="Оставить жалобу",
+    response_description="Информация об оставленной жалобе",
 )
-async def create_new_feedback(
-        feedback: FeedbackCreate,
+async def create_new_complaint(
+        complaint: ComplaintCreate,
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Оставить отзыв.
+    """Оставить жалобу.
 
-    - **text**: текст отзыва
+    - **text**: текст жалобы
     - **advert_id**: id внешний ключ объявления
     """
     advert = await advert_crud.get(
-        feedback.advert_id,
+        complaint.advert_id,
         session,
     )
     await check_user_create_rights(advert, user)
-    return await feedback_crud.create(feedback, user, session)
+    return await complaint_crud.create(complaint, user, session)
 
 
-@feedback_router.get(
+@complaint_router.get(
     '/',
-    response_model=list[FeedbackDB],
+    response_model=list[ComplaintDB],
     status_code=HTTPStatus.OK,
-    summary="Смотреть все отзывы",
-    response_description="Список всех отзывов",
+    summary="Смотреть все жалобы",
+    response_description="Список всех жалоб",
+    dependencies=[Depends(current_superuser)],
 )
-async def get_all_feedbacks(
+async def get_all_complaints(
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Смотреть все отзывы.
+    """Смотреть все жалобы.
 
-    - **text**: текст отзыва
+    - **text**: текст жалобы
     - **advert_id**: id внешний ключ объявления
-    - **id**: уникальный идентификатор отзыва
-    - **user_id**: внешний ключ пользователя, оставившего отзыв
+    - **id**: уникальный идентификатор жалобы
+    - **user_id**: внешний ключ пользователя, оставившего жалобу
     """
-    return await feedback_crud.get_multi(session)
+    return await complaint_crud.get_multi(session)
 
 
-@feedback_router.get(
-    '/{feedback_id}',
-    response_model=FeedbackDB,
+@complaint_router.get(
+    '/{complaint_id}',
+    response_model=ComplaintDB,
     status_code=HTTPStatus.OK,
-    summary="Смотреть отзыв по id",
-    response_description="Данные отзыва",
+    summary="Смотреть жалобу по id",
+    response_description="Данные жалобы",
+    dependencies=[Depends(current_superuser)],
 
 )
-async def get_advert(
-        feedback_id: int,
+async def get_complaint(
+        complaint_id: int,
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Смотреть один отзыв.
+    """Смотреть одну жалобу.
 
-    - **text**: текст отзыва
+    - **text**: текст жалобы
     - **advert_id**: id внешний ключ объявления
-    - **id**: уникальный идентификатор отзыва
-    - **user_id**: внешний ключ пользователя, оставившего отзыв
+    - **id**: уникальный идентификатор жалобы
+    - **user_id**: внешний ключ пользователя, оставившего жалобу
     """
-    return await feedback_crud.get(
-        feedback_id, session
+    return await complaint_crud.get(
+        complaint_id, session
     )
 
 
-@feedback_router.patch(
-    '/{feedback_id}',
-    response_model=FeedbackDB,
+@complaint_router.patch(
+    '/{complaint_id}',
+    response_model=ComplaintDB,
     response_model_exclude_none=True,
     status_code=HTTPStatus.OK,
-    summary="Обновить отзыв по id",
-    response_description="Данные обновленного отзыва",
+    summary="Обновить жалобу по id",
+    response_description="Данные обновленной жалобы",
 )
-async def partially_update_advert(
-        feedback_id: int,
-        obj_in: FeedbackUpdate,
+async def partially_update_complaint(
+        complaint_id: int,
+        obj_in: ComplaintUpdate,
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Обновить отзыв.
+    """Обновить жалобу.
 
-    - **text**: текст отзыва
+    - **text**: текст жалобы
     - **advert_id**: id внешний ключ объявления
     """
-    feedback = await feedback_crud.get(
-        feedback_id, session
+    complaint = await complaint_crud.get(
+        complaint_id, session
     )
-    await check_user_update_delete_rights(feedback, user)
+    await check_user_update_delete_rights(complaint, user)
 
-    return await feedback_crud.update(
-        feedback, obj_in, session
+    return await complaint_crud.update(
+        complaint, obj_in, session
     )
 
 
-@feedback_router.delete(
-    '/{feedback_id}',
-    response_model=FeedbackDB,
+@complaint_router.delete(
+    '/{complaint_id}',
+    response_model=ComplaintDB,
     response_model_exclude_none=True,
     status_code=HTTPStatus.OK,
-    summary="Удалить отзыв по id",
-    response_description="Данные удаленного отзыва",
+    summary="Удалить жалобу по id",
+    response_description="Данные удаленной жалобы",
 )
-async def remove_advert(
-        feedback_id: int,
+async def remove_complaint(
+        complaint_id: int,
         user: User = Depends(current_user),
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Удалить отзыв.
+    """Удалить жалобу.
 
-    - **text**: текст отзыва
+    - **text**: текст жалобы
     - **advert_id**: id внешний ключ объявления
-    - **id**: уникальный идентификатор отзыва
-    - **user_id**: внешний ключ пользователя, оставившего отзыв
+    - **id**: уникальный идентификатор жалобы
+    - **user_id**: внешний ключ пользователя, оставившего жалобу
     """
-    feedback = await feedback_crud.get(
-        feedback_id, session
+    complaint = await complaint_crud.get(
+        complaint_id, session
     )
-    await check_user_update_delete_rights(feedback, user)
-    return await feedback_crud.remove(
-        feedback, session
+    await check_user_update_delete_rights(complaint, user)
+    return await complaint_crud.remove(
+        complaint, session
     )

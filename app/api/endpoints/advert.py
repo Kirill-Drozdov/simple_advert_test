@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
-from app.core.user import current_user
+from app.core.user import current_user, current_superuser
 from app.crud.advert import advert_crud
+from app.crud.complaint import complaint_crud
 from app.crud.feedback import feedback_crud
 from app.models import User
 from app.schemas.advert import (
@@ -187,6 +188,35 @@ async def get_feedbacks_for_advert(
         advert_id, session
     )
     return await feedback_crud.get_feedbacks_for_advert(
+        advert.id,
+        session
+    )
+
+
+@advert_router.get(
+    '/{advert_id}/complaints',
+    response_model=list[FeedbackDB],
+    status_code=HTTPStatus.OK,
+    summary="Получить все жалобы на объявление",
+    response_description="Список жалоб на объявление",
+    dependencies=[Depends(current_superuser)],
+)
+async def get_complaints_for_advert(
+        advert_id: int,
+        session: AsyncSession = Depends(get_async_session),
+):
+    """
+    Получить все жалобы на объявление.
+
+    - **text**: текст жалобы
+    - **advert_id**: id внешний ключ объявления
+    - **id**: уникальный идентификатор жалобы
+    - **user_id**: внешний ключ пользователя, оставившего жалобу
+    """
+    advert = await advert_crud.get(
+        advert_id, session
+    )
+    return await complaint_crud.get_complaints_for_advert(
         advert.id,
         session
     )
