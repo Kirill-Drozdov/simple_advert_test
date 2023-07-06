@@ -4,8 +4,8 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.all_models import Advert
-from app.models.user import User
+from app.core.db.models import Advert
+from app.core.db.models import User
 
 
 async def check_advert_description_is_unique(

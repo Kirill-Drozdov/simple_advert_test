@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.crud.base import CRUDBase
-from app.models.all_models import Feedback
+from app.core.db.crud.base import CRUDBase
+from app.core.db.models import Feedback
 
 
 class CRUDFeedback(CRUDBase):

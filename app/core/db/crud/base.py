@@ -5,8 +5,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.db import Base
-from app.models.user import User
+from app.core.db.db import Base
+from app.core.db.models import User
 
 
 class CRUDBase:

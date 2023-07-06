@@ -1,9 +1,15 @@
 import enum
 
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import Column, Enum, ForeignKey, String, Text, Integer
 from sqlalchemy.orm import relationship
 
-from app.core.db import Base
+from app.core.db.db import Base
+
+
+class User(SQLAlchemyBaseUserTable[int], Base):
+    """Модель пользователя."""
+    pass
 
 
 class Advert(Base):
