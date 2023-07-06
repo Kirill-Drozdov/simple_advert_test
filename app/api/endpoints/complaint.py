@@ -3,17 +3,17 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.db import get_async_session
+from app.core.db.db import get_async_session
 from app.core.user import current_user, current_superuser
-from app.crud.advert import advert_crud
-from app.crud.complaint import complaint_crud
-from app.models import User
-from app.schemas.complaint import (
+from app.core.db.crud.advert import advert_crud
+from app.core.db.crud.complaint import complaint_crud
+from app.core.db.models import User
+from app.api.schemas.complaint import (
     ComplaintCreate,
     ComplaintDB,
     ComplaintUpdate,
 )
-from app.validators import (
+from app.core.validators import (
     check_user_update_delete_rights,
     check_user_create_rights,
 )

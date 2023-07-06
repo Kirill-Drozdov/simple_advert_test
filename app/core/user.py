@@ -11,9 +11,9 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.settings import settings
-from app.core.db import get_async_session
-from app.models.user import User
-from app.schemas.user import UserCreate
+from app.core.db.db import get_async_session
+from app.core.db.models import User
+from app.api.schemas.user import UserCreate
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

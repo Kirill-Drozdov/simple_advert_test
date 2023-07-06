@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Extra, Field, PositiveInt, validator
 
-from app.models.all_models import Advert
+from app.core.db.models import Advert
 # from app.schemas.feedback import FeedbackDB
 
 
