@@ -53,3 +53,21 @@ class Feedback(Base):
         return (
             f'Отзыв: {self.text[:50]}'
         )
+
+
+class Complaint(Base):
+    """Модель жалобы."""
+    text = Column(Text, nullable=False)
+    advert_id = Column(Integer, ForeignKey(
+        'advert.id',
+        name='fk_advert_feedback_id_feedback',
+    ))
+    user_id = Column(Integer, ForeignKey(
+        'user.id',
+        name='fk_advert_user_id_user',
+    ))
+
+    def __repr__(self):
+        return (
+            f'Жалоба: {self.text[:50]}'
+        )

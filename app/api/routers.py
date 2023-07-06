@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.endpoints.advert import advert_router
+from app.api.endpoints.complaint import complaint_router
 from app.api.endpoints.feedback import feedback_router
 from app.api.endpoints.user import user_router
 
@@ -10,6 +11,11 @@ main_router.include_router(
     advert_router,
     prefix='/adverts',
     tags=['Advert'],
+)
+main_router.include_router(
+    complaint_router,
+    prefix='/complaints',
+    tags=['Complaint'],
 )
 main_router.include_router(
     feedback_router,
